@@ -1,5 +1,4 @@
-
-<?php 
+<?php
 include '../layouts/header.php';
 include '../layouts/navbar_admin_petugas.php';
 ?>
@@ -43,45 +42,46 @@ include '../layouts/navbar_admin_petugas.php';
               </div>
             </div>
             <div class="card-body">
-              <?php 
-              if(isset($_GET['info'])){
-                if($_GET['info'] == "hapus"){ ?>
+              <?php
+              if (isset($_GET['info'])) {
+                if ($_GET['info'] == "hapus") { ?>
                   <div class="alert alert-success alert-dismissible">
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                     <h5><i class="icon fas fa-trash"></i> Sukses</h5>
                     Data berhasil di hapus
                   </div>
-                <?php } else if($_GET['info'] == "simpan"){ ?>
+                <?php } else if ($_GET['info'] == "simpan") { ?>
                   <div class="alert alert-success alert-dismissible">
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                     <h5><i class="icon fas fa-check"></i> Sukses</h5>
                     Data berhasil di simpan
                   </div>
-                <?php }else if($_GET['info'] == "update"){ ?>
+                <?php } else if ($_GET['info'] == "update") { ?>
                   <div class="alert alert-success alert-dismissible">
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                     <h5><i class="icon fas fa-edit"></i> Sukses</h5>
                     Data berhasil di update
                   </div>
-                <?php } } ?>
-                <table class="table table-bordered">
-                  <thead>
-                    <tr>
-                      <th>#</th>
-                      <th>Nama Barang</th>
-                      <th>Tanggal Lelang</th>                      
-                      <th>Pemenang Lelang</th>
-                      <th>Harga Tertinggi</th>
-                      <th>Status Lelang</th>
-                      <th>Aksi</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                   <?php
-                   $no = 1;
-                   include "../koneksi.php";
-                   $tb_lelang    =mysqli_query($koneksi, "SELECT * FROM tb_lelang INNER JOIN tb_barang ON tb_lelang.id_barang=tb_barang.id_barang INNER JOIN tb_petugas ON tb_lelang.id_petugas=tb_petugas.id_petugas ");
-                   while($d_tb_lelang = mysqli_fetch_array($tb_lelang)){
+              <?php }
+              } ?>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Nama Barang</th>
+                    <th>Tanggal Lelang</th>
+                    <th>Pemenang Lelang</th>
+                    <th>Harga Tertinggi</th>
+                    <th>Status Lelang</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php
+                  $no = 1;
+                  include "../koneksi.php";
+                  $tb_lelang    = mysqli_query($koneksi, "SELECT * FROM tb_lelang INNER JOIN tb_barang ON tb_lelang.id_barang=tb_barang.id_barang INNER JOIN tb_petugas ON tb_lelang.id_petugas=tb_petugas.id_petugas ");
+                  while ($d_tb_lelang = mysqli_fetch_array($tb_lelang)) {
                     $harga_tertinggi = mysqli_query($koneksi, "select max(penawaran_harga) as penawaran_harga FROM history_lelang where id_lelang='$d_tb_lelang[id_lelang]'");
                     $harga_tertinggi = mysqli_fetch_array($harga_tertinggi);
                     $d_harga_tertinggi = $harga_tertinggi['penawaran_harga'];
@@ -89,24 +89,28 @@ include '../layouts/navbar_admin_petugas.php';
                     $d_pemenang = mysqli_fetch_array($pemenang);
                     $tb_masyarakat = mysqli_query($koneksi, "SELECT * FROM tb_masyarakat where id_user='$d_pemenang[id_user]'");
                     $d_tb_masyarakat = mysqli_fetch_array($tb_masyarakat);
-                    ?>
+                  ?>
                     <tr>
                       <td><?php echo $no++; ?></td>
-                      <td><?=$d_tb_lelang['nama_barang']?></td>
-                      <td><?=$d_tb_lelang['tgl_lelang']?></td>
+                      <td><?= $d_tb_lelang['nama_barang'] ?></td>
+                      <td><?= $d_tb_lelang['tgl_lelang'] ?></td>
                       <td>
                         <?php if ($d_tb_lelang['status'] == 'dibuka') { ?>
                           -
+                        <?php } elseif ($d_tb_lelang['status'] == '') { ?>
+                          -
                         <?php } else { ?>
-                          <?=$d_tb_masyarakat['nama_lengkap']?>
-                        <?php } ?>   
+                          <?= $d_tb_masyarakat['nama_lengkap'] ?>
+                        <?php } ?>
                       </td>
                       <td>
                         <?php if ($d_tb_lelang['status'] == 'dibuka') { ?>
                           -
+                        <?php } elseif ($d_tb_lelang['status'] == '') { ?>
+                          -
                         <?php } else { ?>
-                          Rp. <?= number_format($d_harga_tertinggi)?>
-                        <?php } ?> 
+                          Rp. <?= number_format($d_harga_tertinggi) ?>
+                        <?php } ?>
                       </td>
                       <td>
                         <?php if ($d_tb_lelang['status'] == '') { ?>
@@ -115,14 +119,14 @@ include '../layouts/navbar_admin_petugas.php';
                           <div class="btn btn-success btn-sm">Lelang Dibuka</div>
                         <?php } else { ?>
                           <div class="btn btn-danger btn-sm">Lelang Ditutup</div>
-                        <?php } ?>  
+                        <?php } ?>
                       </td>
                       <td>
-                        <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#modal-buka<?php echo $d_tb_lelang['id_lelang'];?>">Buka Lelang</button>
-                        <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#modal-tutup<?php echo $d_tb_lelang['id_lelang'];?>">Tutup Lelang</button>
+                        <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#modal-buka<?php echo $d_tb_lelang['id_lelang']; ?>">Buka Lelang</button>
+                        <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#modal-tutup<?php echo $d_tb_lelang['id_lelang']; ?>">Tutup Lelang</button>
                       </td>
                     </tr>
-                    <div class="modal fade" id="modal-buka<?php echo $d_tb_lelang['id_lelang'];?>">
+                    <div class="modal fade" id="modal-buka<?php echo $d_tb_lelang['id_lelang']; ?>">
                       <div class="modal-dialog">
                         <div class="modal-content">
                           <div class="modal-header">
@@ -135,10 +139,10 @@ include '../layouts/navbar_admin_petugas.php';
                             <div class="modal-body">
                               <p>Apakah anda ingin membuka lelang...?</p>
                               <div class="form-group">
-                                <input type="text" class="form-control" value="dibuka" name="status" hidden="">  
+                                <input type="text" class="form-control" value="dibuka" name="status" hidden="">
                                 <input type="text" class="form-control" value="" name="id_user" hidden="">
                                 <input type="text" class="form-control" value="" name="harga_akhir" hidden="">
-                                <input type="text" class="form-control" value="<?php echo $d_tb_lelang['id_lelang'];?>" name="id_lelang" hidden="">
+                                <input type="text" class="form-control" value="<?php echo $d_tb_lelang['id_lelang']; ?>" name="id_lelang" hidden="">
                               </div>
                             </div>
                             <div class="modal-footer justify-content-between">
@@ -152,7 +156,7 @@ include '../layouts/navbar_admin_petugas.php';
                       <!-- /.modal-dialog -->
                     </div>
 
-                    <div class="modal fade" id="modal-tutup<?php echo $d_tb_lelang['id_lelang'];?>">
+                    <div class="modal fade" id="modal-tutup<?php echo $d_tb_lelang['id_lelang']; ?>">
                       <div class="modal-dialog">
                         <div class="modal-content">
                           <div class="modal-header">
@@ -164,11 +168,11 @@ include '../layouts/navbar_admin_petugas.php';
                           <form method="post" action="update_lelang_tutup.php">
                             <div class="modal-body">
                               <p>Apakah anda ingin menutup lelang...?</p>
-                              <div class="form-group">                                
+                              <div class="form-group">
                                 <input type="text" class="form-control" value="ditutup" name="status" hidden="">
-                                <input type="text" class="form-control" value="<?php echo $d_tb_masyarakat['id_user'];?>" name="id_user" hidden="">
-                                <input type="text" class="form-control" value="<?php echo $d_harga_tertinggi;?>" name="harga_akhir" hidden="">
-                                <input type="text" class="form-control" value="<?php echo $d_tb_lelang['id_lelang'];?>" name="id_lelang" hidden="">
+                                <input type="text" class="form-control" value="<?php echo $d_tb_masyarakat['id_user']; ?>" name="id_user" hidden="">
+                                <input type="text" class="form-control" value="<?php echo $d_harga_tertinggi; ?>" name="harga_akhir" hidden="">
+                                <input type="text" class="form-control" value="<?php echo $d_tb_lelang['id_lelang']; ?>" name="id_lelang" hidden="">
                               </div>
                             </div>
                             <div class="modal-footer justify-content-between">
@@ -184,7 +188,7 @@ include '../layouts/navbar_admin_petugas.php';
 
                   <?php } ?>
                 </tbody>
-              </table>              
+              </table>
               <div class="modal fade" id="modal-tambah">
                 <div class="modal-dialog">
                   <div class="modal-content">
@@ -202,20 +206,20 @@ include '../layouts/navbar_admin_petugas.php';
                             <option disabled selected>--- Pilih Barang ---</option>
                             <?php
                             include "../koneksi.php";
-                            $tb_barang    =mysqli_query($koneksi, "SELECT * FROM tb_barang");
-                            while($d_tb_barang = mysqli_fetch_array($tb_barang)){
-                              ?>
-                              <option value="<?php echo $d_tb_barang['id_barang'];?>"><?php echo $d_tb_barang['nama_barang'];?></option>
+                            $tb_barang    = mysqli_query($koneksi, "SELECT * FROM tb_barang");
+                            while ($d_tb_barang = mysqli_fetch_array($tb_barang)) {
+                            ?>
+                              <option value="<?php echo $d_tb_barang['id_barang']; ?>"><?php echo $d_tb_barang['nama_barang']; ?></option>
                             <?php } ?>
                           </select>
                         </div>
                         <div class="form-group">
                           <?php
                           include "../koneksi.php";
-                          $tb_petugas    =mysqli_query($koneksi, "SELECT * FROM tb_petugas where username='$_SESSION[username]'");
-                          while($d_tb_petugas = mysqli_fetch_array($tb_petugas)){
-                            ?>
-                            <input type="text" class="form-control" value="<?php echo $d_tb_petugas['id_petugas'];?>" name="id_petugas" hidden>
+                          $tb_petugas    = mysqli_query($koneksi, "SELECT * FROM tb_petugas where username='$_SESSION[username]'");
+                          while ($d_tb_petugas = mysqli_fetch_array($tb_petugas)) {
+                          ?>
+                            <input type="text" class="form-control" value="<?php echo $d_tb_petugas['id_petugas']; ?>" name="id_petugas" hidden>
                           <?php } ?>
                         </div>
                       </div>
@@ -233,7 +237,7 @@ include '../layouts/navbar_admin_petugas.php';
           </div>
         </div>
         <!-- TABEL REAL TIME LELANG -->
-        <div id="div" class="col-lg-12"><?php include"isi.php"; ?></div>
+        <div id="div" class="col-lg-12"><?php include "isi.php"; ?></div>
         <!-- /.col-md-6 -->
       </div>
       <!-- /.row -->
@@ -242,6 +246,6 @@ include '../layouts/navbar_admin_petugas.php';
   <!-- /.content -->
 </div>
 <!-- /.content-wrapper -->
-<?php 
+<?php
 include '../layouts/footer.php';
 ?>
